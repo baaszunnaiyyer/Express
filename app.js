@@ -1,46 +1,37 @@
-const http = require('http')
-const {readFileSync} = require('fs')
-
-const homePage = readFileSync('./navbar-app/index.html')
-const styles = readFileSync('./navbar-app/styles.css')
-const imagesLogo = readFileSync('./navbar-app/logo.svg')
-const homeLogic = readFileSync('./navbar-app/browser-app.js')
+const express = require('express')
+const app = express()
+const {products} = require('./data.js')
 
 
-const server = http.createServer((req,res)=>{
 
-const url = req.url
-console.log(url);
-
-    if(url === '/'){
-        res.writeHead(200, {'content-type' : 'text/html'})
-        res.write(homePage)
-        res.end()
-    }
-
-    // Styles of the app
-
-    if(url === '/styles.css'){
-        res.writeHead(200, {'content-type' : 'text/css'})
-        res.write(styles)
-        res.end()
-    }
-    //Logo Image of the App
-    if(url === '/logo.svg'){
-        res.writeHead(200, {'content-type' : 'image/svg+xml'})
-        res.write(imagesLogo)
-        res.end()
-    }
-
-    if(url === '/browser-app.js'){
-        res.writeHead(200, {'content-type' : 'text/html'})
-        res.write(homeLogic)
-        res.end()
-    }
-    
-
+app.get('/',(req,res)=>{
+    res.send('<h1>Home Page</h1><a href="/api/products"> products</a>')
 })
 
-server.listen(5000)
+app.get('/api/products',(req,res)=>{
+    const newProduct = products.map((product)=>{
+        const {id,name,image} = product
+        return {id, name, image}
+    })
 
-console.log('Express Tutorial')
+    res.json(newProduct)
+})
+
+app.get('/api/products/:productsID',(req,res)=>{
+    // console.log(req)
+    // console.log(req.params)
+
+    const {productsID} = req.params
+
+    const singleProduct = products.find((product)=> product.id == Number(productsID))
+    
+    if(!singleProduct){
+        return res.status(404).send('Product Not Found')
+    }
+    res.json(singleProduct)
+})
+
+app.listen(5000, ()=>{
+    console.log('Server is Listning on Port 5000');
+    
+})
