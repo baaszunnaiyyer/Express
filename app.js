@@ -33,5 +33,7 @@ app.get('/api/products/:productsID',(req,res)=>{
 
 app.listen(5000, ()=>{
     console.log('Server is Listning on Port 5000');
+    console.log('Hello');
+    
     
 })
