@@ -8,3 +8,5 @@ const logger = (req,res,next) => {
 }
 
 module.exports = logger;
+
+// This will log in the User!!
